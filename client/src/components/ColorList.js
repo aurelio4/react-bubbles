@@ -21,7 +21,11 @@ const ColorList = ({ colors, updateColors }) => {
     console.log(colorToEdit)
     axiosWithHeader()
       .put(`/api/colors/${colorToEdit.id}`, colorToEdit)
-      .then(res => console.log(res))
+      .then(res => {
+        updateColors(colors.map(color => {
+          return color.id === res.data.id ? {...color, color: res.data.color, code: res.data.code.hex } : color
+        }))
+      })
       .catch(err => console.error(err))
     // Make a put request to save your updated color
     // think about where will you get the id from...
@@ -32,7 +36,7 @@ const ColorList = ({ colors, updateColors }) => {
     // make a delete request to delete this color
     axiosWithHeader()
       .delete(`/api/colors/${color.id}`)
-      .then(res => console.log(res))
+      .then(res => updateColors(colors.filter(color => color.id !== res.data)))
       .catch(err => console.error(err))
   };
 
